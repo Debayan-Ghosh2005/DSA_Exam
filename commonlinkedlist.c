@@ -1,9 +1,12 @@
-//) Write a C program to compare two linked lists are identical or not.
+// There are two linked lists L1 and L2 containing the following data: 
+//L1: 3, 7,10,15,16,9,22,17,32 
+//L2: 16,2,9,13,47,8,10,1,28 
+//Write a C program to create a linked list L3 that contains only those elements that are  common in linked list L1 and L2.
 
 #include <stdio.h>
 #include <stdlib.h>
 
-// Define the structure of a node in the linked list
+// Define the structure for a node in the linked list
 struct Node {
     int data;
     struct Node* next;
@@ -17,52 +20,23 @@ struct Node* createNode(int value) {
     return newNode;
 }
 
-// Function to compare two linked lists
-int compareLists(struct Node* head1, struct Node* head2) {
-    while (head1 != NULL && head2 != NULL) {
-        if (head1->data != head2->data) {
-            return 0;  // Lists are not identical
-        }
-        head1 = head1->next;
-        head2 = head2->next;
+// Function to insert a node at the end of the list
+void insertNode(struct Node** head, int value) {
+    struct Node* newNode = createNode(value);
+    if (*head == NULL) {
+        *head = newNode;
+        return;
     }
 
-    // If both lists have reached the end at the same time, they are identical
-    if (head1 == NULL && head2 == NULL) {
-        return 1;  // Lists are identical
+    struct Node* temp = *head;
+    while (temp->next != NULL) {
+        temp = temp->next;
     }
-
-    return 0;  // One list is longer than the other
+    temp->next = newNode;
 }
 
-// Function to take user input and create a linked list
-struct Node* inputList() {
-    struct Node* head = NULL;
-    struct Node* tail = NULL;
-    int value, choice;
-
-    do {
-        printf("Enter the value: ");
-        scanf("%d", &value);
-
-        struct Node* newNode = createNode(value);
-
-        if (head == NULL) {
-            head = newNode;
-        } else {
-            tail->next = newNode;
-        }
-        tail = newNode;
-
-        printf("Do you want to add another node? (1 for Yes, 0 for No): ");
-        scanf("%d", &choice);
-    } while (choice == 1);
-
-    return head;
-}
-
-// Function to display the linked list
-void displayList(struct Node* head) {
+// Function to print the list
+void printList(struct Node* head) {
     if (head == NULL) {
         printf("The list is empty.\n");
         return;
@@ -76,28 +50,71 @@ void displayList(struct Node* head) {
     printf("\n");
 }
 
-int main() {
-    struct Node* list1 = NULL;
-    struct Node* list2 = NULL;
-
-    printf("Enter the elements for the first linked list:\n");
-    list1 = inputList();
-
-    printf("Enter the elements for the second linked list:\n");
-    list2 = inputList();
-
-    printf("\nFirst Linked List: ");
-    displayList(list1);
-
-    printf("Second Linked List: ");
-    displayList(list2);
-
-    // Compare the two lists
-    if (compareLists(list1, list2)) {
-        printf("\nThe two linked lists are identical.\n");
-    } else {
-        printf("\nThe two linked lists are not identical.\n");
+// Function to check if an element is in the list
+int isInList(struct Node* head, int value) {
+    struct Node* temp = head;
+    while (temp != NULL) {
+        if (temp->data == value) {
+            return 1;  // Element found
+        }
+        temp = temp->next;
     }
+    return 0;  // Element not found
+}
+
+// Function to create a list of common elements from two lists
+struct Node* createCommonList(struct Node* head1, struct Node* head2) {
+    struct Node* commonList = NULL;
+    struct Node* temp = head1;
+
+    while (temp != NULL) {
+        if (isInList(head2, temp->data)) {
+            insertNode(&commonList, temp->data);
+        }
+        temp = temp->next;
+    }
+
+    return commonList;
+}
+
+int main() {
+    struct Node *L1 = NULL, *L2 = NULL, *L3 = NULL;
+
+    // Create linked list L1
+    insertNode(&L1, 3);
+    insertNode(&L1, 7);
+    insertNode(&L1, 10);
+    insertNode(&L1, 15);
+    insertNode(&L1, 16);
+    insertNode(&L1, 9);
+    insertNode(&L1, 22);
+    insertNode(&L1, 17);
+    insertNode(&L1, 32);
+
+    // Create linked list L2
+    insertNode(&L2, 16);
+    insertNode(&L2, 2);
+    insertNode(&L2, 9);
+    insertNode(&L2, 13);
+    insertNode(&L2, 47);
+    insertNode(&L2, 8);
+    insertNode(&L2, 10);
+    insertNode(&L2, 1);
+    insertNode(&L2, 28);
+
+    // Print the input lists
+    printf("Linked List L1: ");
+    printList(L1);
+
+    printf("Linked List L2: ");
+    printList(L2);
+
+    // Create L3 with common elements from L1 and L2
+    L3 = createCommonList(L1, L2);
+
+    // Print the common elements in L3
+    printf("Linked List L3 (Common Elements): ");
+    printList(L3);
 
     return 0;
 }
