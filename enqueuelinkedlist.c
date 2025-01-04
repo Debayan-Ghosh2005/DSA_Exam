@@ -1,3 +1,4 @@
+//  Write a C program to implement the ENQUEUE of a queue operation using single linked list.   
 #include <stdio.h>
 #include <stdlib.h>
 
